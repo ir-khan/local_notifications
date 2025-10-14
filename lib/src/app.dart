@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'feature/app_startup/presentation/app_startup_page.dart';
 import 'feature/home/presentation/home_page.dart';
 
 class MyApp extends ConsumerWidget {
@@ -18,7 +19,7 @@ class MyApp extends ConsumerWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
       ),
-      home: HomePage(),
+      home: AppStartupPage(onLoaded: (_) => HomePage()),
     );
   }
 }

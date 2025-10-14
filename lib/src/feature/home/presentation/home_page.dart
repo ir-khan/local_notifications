@@ -4,26 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../constants/sounds.dart';
 import '../../../core/services/local_notification/local_notification_service.dart';
 
-class HomePage extends ConsumerStatefulWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  ConsumerState<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends ConsumerState<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  Future<void> init() async {
-    await ref.read(localNotificationServiceProvider).initializeNotification();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: Text('Local Notifications')),
 

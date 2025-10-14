@@ -38,20 +38,32 @@ class LocalNotificationService {
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
+      macOS: initializationSettingsDarwin,
     );
+    try {
+      await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+      if (Platform.isIOS) {
+        await _flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >()
+            ?.requestPermissions(alert: true, badge: true, sound: true);
+      }
 
-    if (Platform.isIOS) {
-      await _flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin
-          >()
-          ?.requestPermissions(alert: true, badge: true, sound: true);
-    }
+      if (Platform.isMacOS) {
+        await _flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin
+            >()
+            ?.requestPermissions(alert: true, badge: true, sound: true);
+      }
 
-    if (Platform.isAndroid) {
-      await _resolveAndroidImplementation();
+      if (Platform.isAndroid) {
+        await _resolveAndroidImplementation();
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -116,12 +128,20 @@ class LocalNotificationService {
                 'A channel used to send local notifications to device.',
             importance: Importance.max,
             priority: Priority.max,
-            sound: RawResourceAndroidNotificationSound(soundAndroid),
+            // sound: RawResourceAndroidNotificationSound(soundAndroid),
           ),
           iOS: DarwinNotificationDetails(
             presentAlert: true,
             presentBadge: true,
             presentBanner: true,
+            presentSound: true,
+            sound: soundIos,
+          ),
+          macOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentBanner: true,
+            presentSound: true,
             sound: soundIos,
           ),
         ),
