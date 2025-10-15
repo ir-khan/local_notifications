@@ -42,9 +42,6 @@ class LocalNotificationService {
     );
     try {
       await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-      /// ✅ TODO ( Izn ur Rehman ) : Optimize this Code
-
       if (Platform.isIOS) {
         await _resolveIosImplementation();
       } else if (Platform.isMacOS) {
@@ -82,17 +79,14 @@ class LocalNotificationService {
     if (android == null) return;
     await android.requestNotificationsPermission();
 
-    for (final sound in [
-      SoundConstants.sound1,
-      SoundConstants.sound2,
-      SoundConstants.sound3,
-    ]) {
+    for (final sound in SoundConstants.values) {
       final channel = AndroidNotificationChannel(
-        'custom-sound-$sound',
-        'Custom Sound ($sound)',
-        description: 'Channel that plays the $sound notification sound.',
+        'custom-sound-${sound.android}',
+        'Custom Sound (${sound.android})',
+        description:
+            'Channel that plays the ${sound.android} notification sound.',
         importance: Importance.max,
-        sound: RawResourceAndroidNotificationSound(sound.split('.').first),
+        sound: RawResourceAndroidNotificationSound(sound.android),
       );
       await android.createNotificationChannel(channel);
     }
@@ -118,7 +112,7 @@ class LocalNotificationService {
     required int id,
     required String title,
     required String body,
-    required String sound,
+    required SoundConstants sound,
   }) async {
     try {
       await _flutterLocalNotificationsPlugin.show(
@@ -127,8 +121,8 @@ class LocalNotificationService {
         body,
         NotificationDetails(
           android: AndroidNotificationDetails(
-            'custom-sound-$sound',
-            'Custom Sound ($sound)',
+            'custom-sound-${sound.android}',
+            'Custom Sound (${sound.android})',
             channelDescription:
                 'A channel used to send local notifications to device.',
             importance: Importance.max,
@@ -139,14 +133,14 @@ class LocalNotificationService {
             presentBadge: true,
             presentBanner: true,
             presentSound: true,
-            sound: sound,
+            sound: sound.iOS,
           ),
           macOS: DarwinNotificationDetails(
             presentAlert: true,
             presentBadge: true,
             presentBanner: true,
             presentSound: true,
-            sound: sound,
+            sound: sound.iOS,
           ),
         ),
       );
