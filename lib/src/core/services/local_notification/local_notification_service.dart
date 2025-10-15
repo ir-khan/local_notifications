@@ -43,6 +43,8 @@ class LocalNotificationService {
     try {
       await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
+      /// TODO ( Izn ur Rehman ) : Optimize this Code
+
       if (Platform.isIOS) {
         await _flutterLocalNotificationsPlugin
             .resolvePlatformSpecificImplementation<

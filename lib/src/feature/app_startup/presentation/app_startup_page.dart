@@ -22,7 +22,6 @@ class AppStartupPage extends ConsumerWidget {
                 'settings must be set when targeting',
               ) &&
               error.toString().contains('platform.')) {
-
             return 'This app is not supported on this platform.\nThe supported platforms are Android and Ios.';
           }
           return error.toString();

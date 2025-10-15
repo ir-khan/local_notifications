@@ -30,6 +30,8 @@ class HomePage extends ConsumerWidget {
           ),
           ElevatedButton(
             onPressed: () async {
+              /// TODO ( Izn ur Rehman ) : Why are we using two variables `soundAndroid` and `soundIos`
+              /// While we can implement this using one variable
               await ref
                   .read(localNotificationServiceProvider)
                   .customSoundNotification(
