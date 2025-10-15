@@ -43,30 +43,34 @@ class LocalNotificationService {
     try {
       await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-      /// TODO ( Izn ur Rehman ) : Optimize this Code
+      /// ✅ TODO ( Izn ur Rehman ) : Optimize this Code
 
       if (Platform.isIOS) {
-        await _flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin
-            >()
-            ?.requestPermissions(alert: true, badge: true, sound: true);
-      }
-
-      if (Platform.isMacOS) {
-        await _flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin
-            >()
-            ?.requestPermissions(alert: true, badge: true, sound: true);
-      }
-
-      if (Platform.isAndroid) {
+        await _resolveIosImplementation();
+      } else if (Platform.isMacOS) {
+        await _resolveMacosImplementation();
+      } else if (Platform.isAndroid) {
         await _resolveAndroidImplementation();
       }
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> _resolveIosImplementation() async {
+    await _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
+  }
+
+  Future<void> _resolveMacosImplementation() async {
+    await _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          MacOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
   Future<void> _resolveAndroidImplementation() async {
@@ -79,16 +83,16 @@ class LocalNotificationService {
     await android.requestNotificationsPermission();
 
     for (final sound in [
-      SoundConstants.sound1Android,
-      SoundConstants.sound2Android,
-      SoundConstants.sound3Android,
+      SoundConstants.sound1,
+      SoundConstants.sound2,
+      SoundConstants.sound3,
     ]) {
       final channel = AndroidNotificationChannel(
         'custom-sound-$sound',
         'Custom Sound ($sound)',
         description: 'Channel that plays the $sound notification sound.',
         importance: Importance.max,
-        sound: RawResourceAndroidNotificationSound(sound),
+        sound: RawResourceAndroidNotificationSound(sound.split('.').first),
       );
       await android.createNotificationChannel(channel);
     }
@@ -114,8 +118,7 @@ class LocalNotificationService {
     required int id,
     required String title,
     required String body,
-    required String soundAndroid,
-    required String soundIos,
+    required String sound,
   }) async {
     try {
       await _flutterLocalNotificationsPlugin.show(
@@ -124,27 +127,26 @@ class LocalNotificationService {
         body,
         NotificationDetails(
           android: AndroidNotificationDetails(
-            'custom-sound-$soundAndroid',
-            'Custom Sound ($soundAndroid)',
+            'custom-sound-$sound',
+            'Custom Sound ($sound)',
             channelDescription:
                 'A channel used to send local notifications to device.',
             importance: Importance.max,
             priority: Priority.max,
-            // sound: RawResourceAndroidNotificationSound(soundAndroid),
           ),
           iOS: DarwinNotificationDetails(
             presentAlert: true,
             presentBadge: true,
             presentBanner: true,
             presentSound: true,
-            sound: soundIos,
+            sound: sound,
           ),
           macOS: DarwinNotificationDetails(
             presentAlert: true,
             presentBadge: true,
             presentBanner: true,
             presentSound: true,
-            sound: soundIos,
+            sound: sound,
           ),
         ),
       );

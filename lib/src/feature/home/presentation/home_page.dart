@@ -30,7 +30,7 @@ class HomePage extends ConsumerWidget {
           ),
           ElevatedButton(
             onPressed: () async {
-              /// TODO ( Izn ur Rehman ) : Why are we using two variables `soundAndroid` and `soundIos`
+              /// ✅ TODO ( Izn ur Rehman ) : Why are we using two variables `soundAndroid` and `soundIos`
               /// While we can implement this using one variable
               await ref
                   .read(localNotificationServiceProvider)
@@ -38,8 +38,7 @@ class HomePage extends ConsumerWidget {
                     id: 1,
                     title: 'Sound 1 Notification',
                     body: 'This is sound 1 notification.',
-                    soundAndroid: SoundConstants.sound1Android,
-                    soundIos: SoundConstants.sound1Ios,
+                    sound: SoundConstants.sound1,
                   );
             },
             child: Text('Sound 1 Notification'),
@@ -52,8 +51,7 @@ class HomePage extends ConsumerWidget {
                     id: 2,
                     title: 'Sound 2 Notification',
                     body: 'This is sound 2 notification.',
-                    soundAndroid: SoundConstants.sound2Android,
-                    soundIos: SoundConstants.sound2Ios,
+                    sound: SoundConstants.sound2,
                   );
             },
             child: Text('Sound 2 Notification'),
@@ -66,8 +64,7 @@ class HomePage extends ConsumerWidget {
                     id: 3,
                     title: 'Sound 3 Notification',
                     body: 'This is sound 3 notification.',
-                    soundAndroid: SoundConstants.sound3Android,
-                    soundIos: SoundConstants.sound3Ios,
+                    sound: SoundConstants.sound3,
                   );
             },
             child: Text('Sound 3 Notification'),
